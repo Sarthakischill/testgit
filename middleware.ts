@@ -30,6 +30,6 @@ export const config = {
   // The matcher defines which routes the middleware will run on.
   // We want to protect all routes except for API routes, static files, and image assets.
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    // '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 }; 
