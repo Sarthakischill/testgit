@@ -7,10 +7,6 @@ import { SessionData, sessionOptions } from '@/lib/session';
 
 export const runtime = 'nodejs';
 
-export async function GET() {
-  return new Response('Method Not Allowed', { status: 405 });
-}
-
 export async function POST(request: NextRequest) {
   try {
     const { password } = await request.json();
