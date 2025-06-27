@@ -1,7 +1,7 @@
 import { getIronSession } from 'iron-session';
 import { cookies } from 'next/headers';
 import { NextResponse, NextRequest } from 'next/server';
-import { compare } from 'bcrypt';
+import { compare } from 'bcryptjs';
 import { supabase } from '@/lib/supabase';
 import { SessionData, sessionOptions } from '@/lib/session';
 
@@ -43,4 +43,4 @@ export async function POST(request: NextRequest) {
     console.error('Login API Error:', error.message);
     return NextResponse.json({ error: error.message || 'An unexpected server error occurred.' }, { status: 500 });
   }
-} 
+}
