@@ -7,10 +7,6 @@ import { SessionData, sessionOptions } from '@/lib/session';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
-  return new Response('Method Not Allowed', { status: 405 });
-}
-
 export async function POST(request: NextRequest) {
   const { password } = await request.json();
 
