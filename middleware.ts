@@ -32,6 +32,6 @@ export async function middleware(request: NextRequest) {
 // The logic inside the middleware function will handle public/private routes.
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 }; 
