@@ -1,21 +1,13 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 
-let supabaseClient: SupabaseClient | null = null;
+// Get Supabase credentials from environment variables
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-function getSupabaseClient() {
-  if (supabaseClient) {
-    return supabaseClient;
-  }
-
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error('Supabase credentials are not set in environment variables.');
-  }
-
-  supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
-  return supabaseClient;
+// Basic validation to ensure the variables are set
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Supabase URL and/or Anon Key are not set in environment variables.');
 }
 
-export const supabase = getSupabaseClient(); 
+// Initialize and export the Supabase client
+export const supabase = createClient(supabaseUrl, supabaseAnonKey); 
