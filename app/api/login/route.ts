@@ -1,25 +1,17 @@
-import { getIronSession } from 'iron-session';
-import { cookies } from 'next/headers';
-import { NextResponse, NextRequest } from 'next/server';
 import { compare } from 'bcrypt';
+// @ts-ignore
+import { withIronSessionApiRoute } from 'iron-session/next';
 import { supabase } from '@/lib/supabase';
-import { SessionData, sessionOptions } from '@/lib/session';
+import { sessionOptions } from '@/lib/session';
 
-export const runtime = 'nodejs';
-
-export async function GET() {
-  return new Response('Method Not Allowed', { status: 405 });
-}
-
-export async function POST(request: NextRequest) {
-  const { password } = await request.json();
-
-  if (!password) {
-    return NextResponse.json({ error: 'Password is required.' }, { status: 400 });
-  }
-
+async function loginRoute(req: any, res: any) {
   try {
-    // 1. Fetch the stored hash from the database
+    const { password } = await req.json();
+
+    if (!password) {
+      return new Response(JSON.stringify({ error: 'Password is required.' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+    }
+
     const { data: loginData, error: dbError } = await supabase
       .from('gh_login')
       .select('hashed_password')
@@ -28,26 +20,32 @@ export async function POST(request: NextRequest) {
 
     if (dbError || !loginData) {
       console.error('DB Error or no password configured:', dbError?.message);
-      throw new Error('Site login is not configured correctly. Please contact an administrator.');
+      return new Response(JSON.stringify({ error: 'Site login is not configured correctly. Please contact an administrator.' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
     }
     
-    // 2. Compare the submitted password with the stored hash
     const isMatch = await compare(password, loginData.hashed_password);
 
     if (!isMatch) {
-      return NextResponse.json({ error: 'Invalid password.' }, { status: 401 });
+      return new Response(JSON.stringify({ error: 'Invalid password.' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
     }
 
-    // 3. If passwords match, create the session
-    const session = await getIronSession<SessionData>(cookies(), sessionOptions);
-    session.isLoggedIn = true;
-    await session.save();
+    req.session.isLoggedIn = true;
+    await req.session.save();
     
     console.log('User successfully logged in.');
-    return NextResponse.json({ ok: true });
+    return new Response(JSON.stringify({ ok: true }), { status: 200, headers: { 'Content-Type': 'application/json' } });
 
   } catch (error: any) {
     console.error('Login API Error:', error.message);
-    return NextResponse.json({ error: error.message || 'An unexpected server error occurred.' }, { status: 500 });
+    return new Response(JSON.stringify({ error: error.message || 'An unexpected server error occurred.' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
   }
-} 
+}
+
+async function getRoute(req: any, res: any) {
+  return new Response('Method Not Allowed', { status: 405 });
+}
+
+export const runtime = 'nodejs';
+
+export const GET = withIronSessionApiRoute(getRoute, sessionOptions);
+export const POST = withIronSessionApiRoute(loginRoute, sessionOptions); 
