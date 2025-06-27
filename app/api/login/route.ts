@@ -5,7 +5,7 @@ import { compare } from 'bcrypt';
 import { supabase } from '@/lib/supabase';
 import { SessionData, sessionOptions } from '@/lib/session';
 
-export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 export async function GET() {
   return new Response('Method Not Allowed', { status: 405 });
