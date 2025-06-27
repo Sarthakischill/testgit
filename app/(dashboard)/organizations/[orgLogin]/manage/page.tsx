@@ -81,7 +81,7 @@ export default function OrganizationManagePage() {
   }, [fetchData]);
 
   return (
-    <div className="space-y-6">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       <Button variant="outline" size="sm" onClick={() => router.back()}>
         <ArrowLeft className="mr-2 h-4 w-4" /> Back to Repositories
       </Button>
@@ -203,4 +203,4 @@ export default function OrganizationManagePage() {
       </div>
     </div>
   );
-} 
+}
