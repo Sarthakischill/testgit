@@ -5,6 +5,11 @@ import { SessionData, sessionOptions } from './lib/session';
 import { cookies } from 'next/headers';
 
 export async function middleware(request: NextRequest) {
+  // If the request is for an API route, do not apply middleware
+  if (request.nextUrl.pathname.startsWith('/api')) {
+    return NextResponse.next();
+  }
+
   const session = await getIronSession<SessionData>(cookies(), sessionOptions);
   const { isLoggedIn } = session;
 
@@ -30,6 +35,6 @@ export const config = {
   // The matcher defines which routes the middleware will run on.
   // We want to protect all routes except for API routes, static files, and image assets.
   matcher: [
-    // '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 }; 
